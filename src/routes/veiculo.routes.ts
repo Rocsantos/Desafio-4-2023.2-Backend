@@ -15,7 +15,7 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/:cpf", async (req, res) => {
-  const result = await selectVeiculos(BigInt(req.params.cpf));
+  const result = await selectVeiculos(req.params.cpf);
 
   if (result === null) return res.status(404).statusMessage;
 

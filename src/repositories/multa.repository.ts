@@ -11,7 +11,7 @@ import { type Multa, MultaSchema } from "../schemas/multa.schema";
  * @returns Multa inserida
  */
 export const insertMulta = async (
-  valor: number,
+  valor: string,
   dataMulta: Date,
   pontosPenalidade: number,
   tipoInfracao: number,
@@ -35,8 +35,8 @@ export const insertMulta = async (
  * @param cpf CPF do motorista, qual está pesquisando as multas
  * @returns Multas do motorista Pesquisado
  */
-export const selectMultaFromCPF = async (cpf: bigint): Promise<Multa[] | null> => {
-  const result = await mysqlConn.execute(
+export const selectMultaFromCPF = async (cpf: string): Promise<Multa[] | null> => {
+  const result = await mysqlConn.query(
     `
 		SELECT ml.* FROM MOTORISTA m
 		INNER JOIN VEICULO v ON v.cpf=m.cpf and m.cpf=?

@@ -15,7 +15,7 @@ import {
  * @returns Motorista inserido
  */
 export const insertMotorista = async (
-  cpf: bigint,
+  cpf: string,
   nome: string,
   dataVencimento: Date,
   categoriaCNH: string,
@@ -38,7 +38,7 @@ export const insertMotorista = async (
  * @returns Todos os motoristas cadastrados
  */
 export const selectAllMotorista = async (): Promise<Motorista[] | null> => {
-  const result = await mysqlConn.execute(`
+  const result = await mysqlConn.query(`
 		SELECT * FROM MOTORISTA;
 	`);
 
@@ -52,7 +52,7 @@ export const selectAllMotorista = async (): Promise<Motorista[] | null> => {
  * @returns Todos os motoristas com mais de 10 pontos
  */
 export const selectMotoristaPontuado10 = async (): Promise<MotoristaPontos[] | null> => {
-  const result = await mysqlConn.execute(`
+  const result = await mysqlConn.query(`
 		SELECT m.cpf, m.nome, SUM(ml.pontosPenalidade) AS pontos FROM MOTORISTA m
 			INNER JOIN VEICULO v ON v.cpf=m.cpf
 			INNER JOIN MULTA ml ON ml.placa=v.placa

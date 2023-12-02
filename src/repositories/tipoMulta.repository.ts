@@ -16,7 +16,7 @@ export const insertTipoMulta = async (descricao: string): Promise<TipoMulta> => 
 };
 
 export const selectAllTipoMulta = async (): Promise<TipoMulta[] | null> => {
-  const result = await mysqlConn.execute(`
+  const result = await mysqlConn.query(`
 		SELECT * FROM TIPOMULTA;
 	`);
 

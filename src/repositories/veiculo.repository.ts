@@ -1,5 +1,5 @@
 import { mysqlConn } from "../base/mysql";
-import { Veiculo, VeiculoSchema } from "../schemas/veiculo.schema";
+import { type Veiculo, VeiculoSchema } from "../schemas/veiculo.schema";
 
 /**
  * @async Insere Veiculo no banco de dados
@@ -11,22 +11,25 @@ import { Veiculo, VeiculoSchema } from "../schemas/veiculo.schema";
  * @param cpf CPF do proprietario
  * @returns Veiculo inserido
  */
-export const insertVeiculo = async(
-	placa: string,
-	marca: string,
-	modelo: string,
-	ano: number,
-	corPredominante: string,
-	cpf: bigint
+export const insertVeiculo = async (
+  placa: string,
+  marca: string,
+  modelo: string,
+  ano: number,
+  corPredominante: string,
+  cpf: bigint,
 ): Promise<Veiculo> => {
-	const result = await mysqlConn.execute(`
+  const result = await mysqlConn.execute(
+    `
 		INSERT INTO VEICULO(placa, marca, modelo, ano, corPredominante, cpf)
-		VALUES (${placa}, ${marca}, ${modelo}, ${ano}, ${corPredominante}, ${cpf});
-	`);
+		VALUES (?, ?, ?, ?, ?, ?);
+	`,
+    [placa, marca, modelo, ano, corPredominante, cpf],
+  );
 
-	if (result === null) throw new Error("Falha ao inserir Veiculo");
+  if (result === null) throw new Error("Falha ao inserir Veiculo");
 
-	return VeiculoSchema.parse(result);
+  return VeiculoSchema.parse(result);
 };
 
 /**
@@ -34,13 +37,13 @@ export const insertVeiculo = async(
  * @param cpf CPF do Proprietario do(s) Veiculo(s)
  * @return Todos os veiculos do Motorista pesquisado
  */
-export const selectVeiculos = async(cpf: bigint): Promise<Veiculo[] | null> => {
-	const result = await mysqlConn.execute(`
+export const selectVeiculos = async (cpf: bigint): Promise<Veiculo[] | null> => {
+  const result = await mysqlConn.execute(`
 		SELECT v.* FROM MOTORISTA m
 		INNER JOIN VEICULO v ON v.cpf=m.${cpf};
 	`);
 
-	if (result === null) return null;
+  if (result === null) return null;
 
-	return VeiculoSchema.array().parse(result);
+  return VeiculoSchema.array().parse(result);
 };

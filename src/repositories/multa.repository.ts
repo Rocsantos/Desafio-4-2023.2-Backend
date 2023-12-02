@@ -1,5 +1,5 @@
 import { mysqlConn } from "../base/mysql";
-import { Multa, MultaSchema } from "../schemas/multa.schema";
+import { type Multa, MultaSchema } from "../schemas/multa.schema";
 
 /**
  * @async Insere a Multa no banco de dados.
@@ -10,21 +10,24 @@ import { Multa, MultaSchema } from "../schemas/multa.schema";
  * @param placa Placa do Veiculo multado
  * @returns Multa inserida
  */
-export const insertMulta = async(
-	valor: number,
-	dataMulta: Date,
-	pontosPenalidade: number,
-	tipoInfracao: number,
-	placa: string
+export const insertMulta = async (
+  valor: number,
+  dataMulta: Date,
+  pontosPenalidade: number,
+  tipoInfracao: number,
+  placa: string,
 ): Promise<Multa> => {
-	const result = await mysqlConn.execute(`
+  const result = await mysqlConn.execute(
+    `
 		INSERT INTO MULTA(valor, dataMulta, pontosPenalidade, tipoInfracao, placa)
-		VALUES (${valor}, ${dataMulta}, ${pontosPenalidade}, ${tipoInfracao}, ${placa});
-	`);
+		VALUES (?, ?, ?, ?, ?);
+	`,
+    [valor, dataMulta, pontosPenalidade, tipoInfracao, placa],
+  );
 
-	if (result === null) throw new Error("Falha ao inserir Multa");
+  if (result === null) throw new Error("Falha ao inserir Multa");
 
-	return MultaSchema.parse(result);
+  return MultaSchema.parse(result);
 };
 
 /**
@@ -32,15 +35,15 @@ export const insertMulta = async(
  * @param cpf CPF do motorista, qual está pesquisando as multas
  * @returns Multas do motorista Pesquisado
  */
-export const selectMultaFromCPF = async(cpf: bigint): Promise<Multa[] | null> => {
-	const result = await mysqlConn.execute(`
+export const selectMultaFromCPF = async (cpf: bigint): Promise<Multa[] | null> => {
+  const result = await mysqlConn.execute(`
 		SELECT ml.* FROM MOTORISTA m
 		INNER JOIN VEICULO v ON v.cpf=m.${cpf}
 		INNER JOIN MULTA ml ON ml.placa=v.placa
 		ORDER BY dataMulta;
 	`);
 
-	if (result === null) return null;
+  if (result === null) return null;
 
-	return MultaSchema.array().parse(result);
+  return MultaSchema.array().parse(result);
 };

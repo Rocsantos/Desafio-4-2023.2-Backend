@@ -38,10 +38,13 @@ export const insertVeiculo = async (
  * @return Todos os veiculos do Motorista pesquisado
  */
 export const selectVeiculos = async (cpf: bigint): Promise<Veiculo[] | null> => {
-  const result = await mysqlConn.execute(`
+  const result = await mysqlConn.execute(
+    `
 		SELECT v.* FROM MOTORISTA m
-		INNER JOIN VEICULO v ON v.cpf=m.${cpf};
-	`);
+		INNER JOIN VEICULO v ON v.cpf=m.cpf and m.cpf=?;
+	`,
+    [cpf],
+  );
 
   if (result === null) return null;
 

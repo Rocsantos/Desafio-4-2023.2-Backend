@@ -36,12 +36,15 @@ export const insertMulta = async (
  * @returns Multas do motorista Pesquisado
  */
 export const selectMultaFromCPF = async (cpf: bigint): Promise<Multa[] | null> => {
-  const result = await mysqlConn.execute(`
+  const result = await mysqlConn.execute(
+    `
 		SELECT ml.* FROM MOTORISTA m
-		INNER JOIN VEICULO v ON v.cpf=m.${cpf}
+		INNER JOIN VEICULO v ON v.cpf=m.cpf and m.cpf=?
 		INNER JOIN MULTA ml ON ml.placa=v.placa
 		ORDER BY dataMulta;
-	`);
+	`,
+    [cpf],
+  );
 
   if (result === null) return null;
 

@@ -9,7 +9,7 @@ INSERT INTO TIPOMULTA (descricao) VALUES
 	('Avançar o sinal vermelho');
 
 INSERT INTO MOTORISTA (cpf, nome, dataVencimento, categoriaCNH) VALUES
-	(12345678901, 'Maria José Silva', '2024-6-31', 'A'),
+	(12345678901, 'Maria José Silva', '2024-6-30', 'A'),
 	(12345678902, 'José Maria Silva', '2024-1-1', 'B'),
 	(12345678903, 'Silvio Maria José', '2030-12-31', 'AB');
 
